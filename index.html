@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>かんたん発注書メーカー | 無料で発注書をすぐ作成・印刷</title>
+  <meta name="description" content="中小企業・個人事業主向けの無料発注書メーカー。入力するだけで発注書が完成。PDF保存もかんたん。" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>📝 かんたん発注書メーカー</h1>
+    <p>中小企業・個人事業主向け｜無料・登録不要</p>
+  </header>
+
+  <div class="ad-placeholder">＜広告スペース：Google AdSense コードをここに貼り付け＞</div>
+
+  <main class="container">
+    <div class="layout">
+
+      <section class="form-panel">
+        <h2>① 情報を入力</h2>
+
+        <fieldset>
+          <legend>発注者（あなた）</legend>
+          <label>会社名 / 氏名
+            <input id="senderName" type="text" placeholder="株式会社〇〇" />
+          </label>
+          <label>担当者名
+            <input id="senderPerson" type="text" placeholder="山田 太郎" />
+          </label>
+          <label>住所
+            <input id="senderAddress" type="text" placeholder="東京都渋谷区〇〇1-2-3" />
+          </label>
+          <label>電話番号
+            <input id="senderPhone" type="text" placeholder="03-0000-0000" />
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>発注先（取引先）</legend>
+          <label>会社名 / 氏名
+            <input id="clientName" type="text" placeholder="〇〇商事" />
+          </label>
+          <label>担当者名
+            <input id="clientPerson" type="text" placeholder="鈴木 様" />
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>発注情報</legend>
+          <label>発注書番号
+            <input id="orderNo" type="text" placeholder="ORD-2026-001" />
+          </label>
+          <label>発注日
+            <input id="issueDate" type="date" />
+          </label>
+          <label>納品希望日
+            <input id="deliveryDate" type="date" />
+          </label>
+          <label>消費税率
+            <select id="taxRate">
+              <option value="0.10">10%</option>
+              <option value="0.08">8%（軽減税率）</option>
+              <option value="0">非課税</option>
+            </select>
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>発注明細</legend>
+          <table class="items-table" id="itemsTable">
+            <thead>
+              <tr>
+                <th>品名・内容</th>
+                <th>数量</th>
+                <th>単価（円）</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+          <button type="button" id="addRowBtn" class="btn-secondary">＋ 行を追加</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>備考</legend>
+          <textarea id="notes" rows="3" placeholder="納品条件・支払条件などを記入（任意）"></textarea>
+        </fieldset>
+
+        <button type="button" id="printBtn" class="btn-primary">🖨️ 印刷 / PDF保存</button>
+      </section>
+
+      <section class="preview-panel">
+        <h2 class="no-print">② プレビュー（リアルタイム更新）</h2>
+
+        <div class="invoice" id="invoicePreview">
+          <div class="invoice-header">
+            <h2>発 注 書</h2>
+            <table class="meta-table">
+              <tr><td>発注書番号</td><td id="p-orderNo">—</td></tr>
+              <tr><td>発注日</td><td id="p-issueDate">—</td></tr>
+              <tr><td>納品希望日</td><td id="p-deliveryDate">—</td></tr>
+            </table>
+          </div>
+
+          <div class="invoice-parties">
+            <div class="client-block">
+              <p id="p-clientName" class="client-name">—</p>
+              <p id="p-clientPerson">—</p>
+              <p>御中</p>
+            </div>
+            <div class="sender-block">
+              <p id="p-senderName" class="sender-name">—</p>
+              <p id="p-senderPerson">—</p>
+              <p id="p-senderAddress">—</p>
+              <p id="p-senderPhone">—</p>
+            </div>
+          </div>
+
+          <div class="total-box">
+            <span>発注金額合計</span>
+            <span id="p-grandTotal" class="grand-total">¥0</span>
+          </div>
+
+          <table class="invoice-items">
+            <thead>
+              <tr>
+                <th>品名・内容</th>
+                <th>数量</th>
+                <th>単価</th>
+                <th>金額</th>
+              </tr>
+            </thead>
+            <tbody id="p-itemsBody"></tbody>
+          </table>
+
+          <div class="subtotals">
+            <div class="subtotal-row">
+              <span>小計</span>
+              <span id="p-subtotal">¥0</span>
+            </div>
+            <div class="subtotal-row">
+              <span id="p-taxLabel">消費税（10%）</span>
+              <span id="p-tax">¥0</span>
+            </div>
+            <div class="subtotal-row total-row">
+              <span>合計</span>
+              <span id="p-total">¥0</span>
+            </div>
+          </div>
+
+          <div class="notes-section" id="p-notesSection">
+            <p class="notes-label">備考</p>
+            <p id="p-notes"></p>
+          </div>
+
+          <p class="invoice-note">※ 上記の通り発注いたします。</p>
+        </div>
+      </section>
+    </div>
+
+    <aside class="affiliate-section no-print">
+      <h3>💡 発注書・請求書の管理をもっとかんたんに</h3>
+      <div class="affiliate-cards">
+        <div class="affiliate-card">
+          <strong>freee 会計</strong>
+          <p>確定申告まで自動化。中小企業に人気No.1の会計ソフト。</p>
+          <a href="#" class="btn-affiliate">無料で試す →</a>
+        </div>
+        <div class="affiliate-card">
+          <strong>マネーフォワード クラウド</strong>
+          <p>発注書・請求書・経費を一元管理。インボイス対応済み。</p>
+          <a href="https://px.a8.net/svt/ejp?a8mat=4B1THS+8XI3G2+4JGQ+BWVTE" rel="nofollow" class="btn-affiliate">無料で試す →</a>
+          <img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4B1THS+8XI3G2+4JGQ+BWVTE" alt="" />
+        </div>
+      </div>
+    </aside>
+
+    <aside class="upsell-section no-print">
+      <h3>🚀 もっと便利に使いたい方へ（プロ版・近日公開）</h3>
+      <ul>
+        <li>✅ 会社ロゴを発注書に追加</li>
+        <li>✅ テンプレートを保存・再利用</li>
+        <li>✅ 過去の発注書を一覧管理</li>
+      </ul>
+      <div class="email-capture">
+        <input type="email" id="proEmail" placeholder="メールアドレスを入力" />
+        <button type="button" id="proSignupBtn" class="btn-primary">プロ版の案内を受け取る</button>
+      </div>
+      <p id="signupMessage" class="signup-message"></p>
+    </aside>
+  </main>
+
+  <footer class="site-footer no-print">
+    <p>© 2026 かんたん発注書メーカー | 無料ツール</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
